@@ -25,20 +25,18 @@ const WeatherApp = () => {
           units: 'imperial'
         }
       });
-      setWeatherData(response.data);
+      
+      const newWeatherData = response.data;
+      setWeatherData(newWeatherData);
       
       // Update search history
-      setSearchHistory(prev => {
-        // Create a new array with the current search
-        const newHistory = [response.data];
-        // Add previous searches that aren't the current city
-        prev.forEach(item => {
-          if (item.id !== response.data.id) {
-            newHistory.push(item);
-          }
-        });
+      setSearchHistory(currentHistory => {
+        // Remove the city if it already exists in history
+        const filteredHistory = currentHistory.filter(item => item.id !== newWeatherData.id);
+        // Add the new search to the beginning
+        const updatedHistory = [newWeatherData, ...filteredHistory];
         // Keep only the 5 most recent searches
-        return newHistory.slice(0, 5);
+        return updatedHistory.slice(0, 5);
       });
       
     } catch (err) {
